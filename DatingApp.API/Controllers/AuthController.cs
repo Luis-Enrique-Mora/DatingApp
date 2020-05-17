@@ -17,14 +17,16 @@ namespace DatingApp.API.Controllers
     {
         private readonly IAuthRepository _repo;
         private IConfiguration Config { get; set; }
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        private readonly DataContext _db;
+        public AuthController(IAuthRepository repo, IConfiguration config, DataContext db)
         {
             this._repo = repo;
             this.Config = config;
+            this._db = db;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto )
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
             
             if(!ModelState.IsValid)
@@ -33,7 +35,7 @@ namespace DatingApp.API.Controllers
             }
             
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
-            if(await _repo.userExist(userForRegisterDto.Username))
+            if(await _repo.UserExist(userForRegisterDto.Username))
             {
                 return BadRequest("Username already exist");
             }
